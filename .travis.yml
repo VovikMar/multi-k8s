@@ -1,0 +1,22 @@
+sudo: required
+services:
+  -docker
+
+before_install:
+  - docker build -t vovikdevop/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run vovikdevop/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t vovikdevop/multi-client ./client
+  - docker build -t vovikdevop/multi-nginx ./nginx
+  - docker build -t vovikdevop/multi-server ./server
+  - docker build -t vovikdevop/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push vovikdevop/multi-client
+  - docker push vovikdevop/multi-nginx
+  - docker push vovikdevop/multi-server
+  - docker push vovikdevop/multi-worker
