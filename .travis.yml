@@ -21,7 +21,7 @@ after_success:
   - docker push vovikdevop/multi-server
   - docker push vovikdevop/multi-worker
 
-  deploy:
+deploy:
     provider: elasticbeanstalk
     region: us-east-2
     app: multi-docker
