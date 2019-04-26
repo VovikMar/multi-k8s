@@ -1,0 +1,36 @@
+{
+    "AWSEBDockerrunVersion": 2,
+    "containerDefinitions": [
+        {
+            "name": "client",
+            "image": "vovikdevop/multi-client",
+            "hostname": "client",
+            "essential":  false
+        },
+        {
+            "name": "server",
+            "image": "vovikdevop/multi-server",
+            "hostnmae": "api",
+            "essential": false
+        },
+        {
+            "name": "worker",
+            "image": "vovikdevop/multi-worker",
+            "hostname": "worker",
+            "essential": false
+        },
+        {
+            "name": "nginx",
+            "image": "vovikdevop/multi-nginx",
+            "hostname": "nginx",
+            "essential": true,
+            "portMappings": [
+                {
+                    "hostPort": 80,
+                    "conteinerPort": 80
+                }
+            ],
+            "links": ["client", "server"]
+        }
+    ]
+}
