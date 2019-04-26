@@ -1,35 +1,36 @@
 sudo: required
 services:
-    - docker
+  -docker
 
 before_install:
-    - docker build -t mvasupalli/complex-test -f ./client/Dockerfile.dev ./client
+  - docker build -t vovikdevop/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-    - docker run mvasupalli/complex-test npm run test -- --coverage
+  - docker run vovikdevop/react-test npm test -- --coverage
 
 after_success:
-    - docker build -t mvasupalli/multi-client ./client
-    - docker build -t mvasupalli/multi-server ./server
-    - docker build -t mvasupalli/multi-nginx ./nginx
-    - docker build -t mvasupalli/multi-worker ./worker
-    # Log in to the docker CLI
-    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-    # push the production images into docker hub
-    - docker push mvasupalli/multi-client
-    - docker push mvasupalli/multi-server
-    - docker push mvasupalli/multi-nginx
-    - docker push mvasupalli/multi-worker
+  - docker build -t vovikdevop/multi-client ./client
+  - docker build -t vovikdevop/multi-nginx ./nginx
+  - docker build -t vovikdevop/multi-server ./server
+  - docker build -t vovikdevop/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push vovikdevop/multi-client
+  - docker push vovikdevop/multi-nginx
+  - docker push vovikdevop/multi-server
+  - docker push vovikdevop/multi-worker
 
 deploy:
     provider: elasticbeanstalk
-    region: ap-south-1
+    region: us-east-2
     app: multi-docker
     env: MultiDocker-env
-    bucket_name: elasticbeanstalk-ap-south-1-773237655473
+    bucket_name: elasticbeanstalk-us-east-2-267994093755
     bucket_path: docker-multi
     on:
-        branch: master
+      branch: master
     access_key_id: $AWS_ACCESS_KEY
     secret_access_key:
-        secure: $AWS_SECRET_KEY
+      secure: $AWS_SECRET_KEY
+       
